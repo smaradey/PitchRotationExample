@@ -29,6 +29,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	UFUNCTION(BlueprintCallable)
+	void SpawnObjectsWithDifferentPitch(FTransform AnchorTransform, TSubclassOf<AActor> InActorClassToSpawn, float InDegresDelta, uint8 NumSpawns);
+
 protected:
 
 	/** Resets HMD orientation in VR. */

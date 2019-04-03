@@ -47,6 +47,35 @@ ARotationTestCharacter::ARotationTestCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
+void ARotationTestCharacter::SpawnObjectsWithDifferentPitch(FTransform AnchorTransform, TSubclassOf<AActor> InActorClassToSpawn, float InDegresDelta, uint8 NumSpawns)
+{
+	float RotationDeltaInDegrees = -InDegresDelta;
+
+	FVector HeightOffset(0, 0, 100);
+
+	for (uint8 i = 0; i < NumSpawns; i++)
+	{
+		FTransform projTran(AnchorTransform);
+		FQuat tranRot = projTran.GetRotation();
+		float currentRotation = FMath::DegreesToRadians(RotationDeltaInDegrees*i);
+
+		FQuat pitchQuat(FVector(0, 1, 0), currentRotation);
+		tranRot *= pitchQuat;
+		tranRot.Normalize();
+		projTran.SetRotation(tranRot);
+
+		projTran.SetLocation(projTran.GetLocation() + HeightOffset * i);
+
+		// Load in the projectile
+		AActor* Proj = GetWorld()->SpawnActorDeferred<AActor>(InActorClassToSpawn, projTran, this, this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (Proj)
+		{
+			// Spawn the projectile
+			Proj->FinishSpawning(projTran);
+		}
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
